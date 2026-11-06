@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#42684f">
+  <meta name="description" content="어서오점 — 작은 편의점의 점장이 되어 상품을 스캔하고, 거스름돈을 건네고, 나만의 가게를 키워 보세요.">
+  <title>어서오점 · 나의 작은 편의점</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./checkout.css">
+</head>
+<body data-branch="neighborhood">
+  <div id="app">
+    <header class="topbar">
+      <a class="brand" href="#" id="brand-home" aria-label="어서오점 메뉴">
+        <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="18" width="32" height="25" rx="4" fill="#fff7e6" stroke="currentColor" stroke-width="2.5"/><path d="M6 18 10 7h28l4 11" fill="#e7a78c" stroke="currentColor" stroke-width="2.5"/><path d="M6 18v4c0 5 8 5 9 0 1 5 8 5 9 0 1 5 8 5 9 0 1 5 9 5 9 0v-4" fill="#8bb7a1" stroke="currentColor" stroke-width="2.5"/><rect x="13" y="30" width="9" height="8" rx="1.5" fill="#bcd8d1"/><path d="M28 43V29h8v14" fill="#c9ded1" stroke="currentColor" stroke-width="2"/><circle cx="33" cy="36" r="1" fill="currentColor"/></svg>
+        <div><strong>어서오점<span class="brand-dot">.</span></strong><small>나의 작은 편의점</small></div>
+      </a>
+      <nav class="topnav" aria-label="게임 메뉴">
+        <button data-menu="manage" class="nav-button"><span data-icon="store"></span><span>점포 관리</span></button>
+        <button data-menu="staff" class="nav-button"><span data-icon="people"></span><span>알바 관리</span></button>
+        <button data-menu="branches" class="nav-button"><span data-icon="map"></span><span>우리 동네</span></button>
+      </nav>
+      <div class="header-actions">
+        <button id="header-save-btn" class="save-button" title="현재 진행 저장" aria-label="가게 저장하기"><span data-icon="save"></span><span id="header-save-label">저장</span></button>
+        <button id="sound-btn" class="icon-button" title="소리 켜기" aria-label="소리 켜기"></button>
+        <button id="help-btn" class="icon-button" title="조작 방법" aria-label="조작 방법"><span data-icon="help"></span></button>
+        <button id="pause-btn" class="icon-button" title="일시정지" aria-label="일시정지"><span data-icon="pause"></span></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="day-heading">
+        <div class="day-title"><span class="eyebrow" id="branch-label">골목 끝, 포근한 우리 가게</span><h1 id="day-title">오늘도 반갑게, 어서오세요!</h1></div>
+        <div class="day-meta"><span class="weather"><span data-icon="sun"></span><span id="weather-text">맑음 · 21°</span></span><span class="pill" id="level-badge">작은 편의점 · Lv.1</span></div>
+      </section>
+
+      <section class="stats-strip" aria-label="오늘의 매장 현황">
+        <div class="stat-cell time-cell"><span class="stat-icon sage"><span data-icon="clock"></span></span><div><span class="stat-label" id="day-number">1일차</span><strong id="clock-value">09:00</strong></div><span class="open-pill" id="phase-label">영업 준비</span></div>
+        <div class="stat-cell revenue-cell"><span class="stat-icon peach"><span data-icon="receipt"></span></span><div><span class="stat-label" id="revenue-label">오늘 매출</span><strong><span id="revenue-value">0</span><small>원</small></strong></div><span class="stat-extra" id="served-value">계산 0명</span></div>
+        <div class="stat-cell profit-cell" id="profit-cell"><span class="stat-icon sage"><span data-icon="trend"></span></span><div><span class="stat-label" id="profit-label">오늘 순이익</span><strong><span id="profit-value">0</span><small>원</small></strong></div></div>
+        <div class="stat-cell cash-cell"><span class="stat-icon butter"><span data-icon="wallet"></span></span><div><span class="stat-label">보유 금액</span><strong><span id="cash-value">120,000</span><small>원</small></strong></div></div>
+        <div class="stat-cell rating-cell"><span class="stat-icon blush"><span data-icon="star"></span></span><div><span class="stat-label">우리 가게 평점</span><strong><span id="rating-value">4.5</span><small>/ 5.0</small></strong></div><span class="rating-stars" aria-hidden="true">★★★★★</span></div>
+        <div class="finance-breakdown" id="finance-breakdown"><span class="finance-period" id="finance-period">오늘 지출</span><span>발주 <strong id="purchase-cost-value">0</strong>원</span><span hidden>이전 고용비 <strong id="hire-cost-value">0</strong>원</span><span>알바 일당 <strong id="wage-cost-value">0</strong>원</span><span class="finance-formula" id="finance-note">순이익 = 매출 − 발주 − 일당</span></div>
+      </section>
+
+      <div class="play-layout">
+        <div class="delivery-slot" id="delivery-slot" hidden>
+          <section class="delivery-alert" id="delivery-alert" aria-labelledby="delivery-title">
+            <div class="delivery-heading">
+              <span class="delivery-emblem" aria-hidden="true"><span data-icon="truck"></span></span>
+              <div><span class="delivery-eyebrow">배달 주문 <b id="delivery-flag">새 주문</b></span><h2 id="delivery-title">진열대에서 하나씩 담아요</h2></div>
+            </div>
+            <div class="delivery-details"><div class="delivery-items" id="delivery-items"></div><p class="delivery-caption" id="delivery-caption">상품을 하나씩 담아 입구의 배달 기사님께 전달해 주세요.</p></div>
+            <div class="delivery-controls">
+              <div class="delivery-countdown" role="timer" aria-live="off" aria-label="배달 주문 남은 시간"><strong id="delivery-seconds">150</strong><span>초 남음</span></div>
+              <button class="button delivery-route" id="delivery-route-btn" type="button"><span data-icon="box"></span><span id="delivery-route-label">배달 상품 담기</span><span aria-hidden="true">→</span></button>
+            </div>
+            <div class="delivery-time-track" id="delivery-time-track" role="progressbar" aria-label="배달 주문 남은 시간" aria-valuemin="0" aria-valuemax="150" aria-valuenow="150"><i id="delivery-time-bar"></i></div>
+          </section>
+        </div>
+        <section class="stage-panel" aria-label="편의점 게임 화면">
+          <div class="stage-top"><span class="stage-address"><i class="status-dot"></i><span id="stage-name">동네 구멍가게</span></span><div class="stage-top-right"><span id="shift-progress">오늘의 첫 손님을 기다려요</span><button id="zoom-btn" class="text-icon" aria-label="넓게 보기" title="넓게 보기"><span data-icon="expand"></span></button></div></div>
+          <div class="canvas-wrap" id="canvas-wrap">
+            <canvas id="game-canvas" width="1000" height="740" tabindex="0" aria-label="어서오점 매장. 방향키로 이동하고 E 키로 가까운 시설을 이용하세요."></canvas>
+            <div class="stage-notice" id="stage-notice"><span data-icon="heart"></span><span>작은 가게에, 큰 꿈을 담아.</span></div>
+            <div class="task-bubble" id="task-bubble" hidden></div>
+            <div class="scene-paused" id="scene-paused" hidden><span data-icon="pause"></span><strong>잠깐 쉬어 가요</strong><button id="resume-btn" class="button primary">영업 계속하기</button></div>
+            <div class="floating-start" id="floating-start"><span>진열을 확인했으면, 문을 열어 볼까요?</span><button id="start-day-btn" class="button primary"><span data-icon="sun"></span>영업 시작</button></div>
+          </div>
+          <div class="stage-bottom">
+            <div class="player-card"><div id="player-portrait" class="avatar"></div><div><strong>혜연 점장</strong><div class="energy-line"><span data-icon="bolt"></span><span class="energy-track"><i id="energy-bar"></i></span><small id="energy-value">100</small></div></div></div>
+            <div class="context-action"><span id="interaction-hint">매장을 눌러 이동해 보세요</span><button class="button action-button" id="interact-btn"><kbd>E</kbd><span id="interact-label">행동하기</span></button></div>
+          </div>
+          <div class="controls-help"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 이동</span><span><kbd>Shift</kbd> 달리기</span><span><kbd>E</kbd> 행동</span><span><span data-icon="pointer"></span> 시설을 눌러 바로 이동</span></div>
+          <div class="touch-controls" id="touch-controls" aria-label="모바일 조작">
+            <div class="dpad"><button data-direction="up" aria-label="위로 이동">↑</button><button data-direction="left" aria-label="왼쪽으로 이동">←</button><span>✦</span><button data-direction="right" aria-label="오른쪽으로 이동">→</button><button data-direction="down" aria-label="아래로 이동">↓</button></div>
+            <div class="touch-actions"><button id="touch-run" class="round-control"><span data-icon="bolt"></span>달리기</button><button id="touch-act" class="round-control action-touch"><span data-icon="hand"></span>행동</button></div>
+          </div>
+        </section>
+
+        <aside class="side-panel" aria-label="점장 수첩">
+          <div id="sidebar-default">
+            <section class="notebook-card mission-card"><div class="card-title"><h2><span data-icon="flag"></span>오늘의 작은 목표</h2><span class="tiny-label">본사 미션</span></div><p id="mission-label">첫 영업을 시작해 보세요</p><div class="mission-line"><span class="progress-track"><i id="mission-bar"></i></span><strong id="mission-count">0 / 8</strong></div><div class="mission-reward"><span><span data-icon="star"></span>본사 별 <b id="mission-reward">1</b>개</span><small id="total-stars">모은 별 0개</small></div></section>
+            <section class="notebook-card queue-card"><div class="card-title"><h2><span data-icon="people"></span>기다리는 손님</h2><span class="count-pill" id="queue-count">0명</span></div><div class="queue-registers" aria-label="계산대 현황"><div class="queue-register staff" id="staff-register" data-open="false"><span>왼쪽 · 계산 알바</span><strong id="staff-register-state">알바 고용 시 열려요</strong></div><div class="queue-register manager"><span>오른쪽 · 점장</span><strong id="manager-register-state">대기 없음</strong></div></div><div id="queue-list" class="queue-list"><div class="empty-queue"><span data-icon="bag"></span><p>곧 첫 손님이 찾아올 거예요</p><small>인사는 반갑게, 계산은 꼼꼼하게!</small></div></div><p class="queue-manager-note" id="queue-manager-note" hidden>점장 요청이 있어요. 계산대에서 직접 도와주세요.</p><button id="goto-counter" class="button outline full-width"><span data-icon="scan"></span>점장 계산대로 가기<span>→</span></button></section>
+            <section class="notebook-card inventory-card"><div class="card-title"><h2><span data-icon="box"></span>진열대 살펴보기</h2><button data-menu="stock" class="text-button">재고 관리 <span>↗</span></button></div><div id="inventory-list" class="inventory-list"></div><button id="goto-warehouse" class="warehouse-link"><span data-icon="box"></span>창고에서 상품 가져오기 <span>→</span></button></section>
+            <div class="tip-card"><span data-icon="sparkle"></span><p id="daily-tip">하나씩 배우면 돼요.<br>오늘은 스캔하고 카드만 받으면 끝!</p></div>
+          </div>
+          <div id="checkout-panel" hidden></div>
+        </aside>
+      </div>
+
+      <footer class="game-footer"><span><i class="small-leaf"></i>서툴러도 괜찮아, 오늘도 우리 가게.</span><div><button id="save-btn">저장하기</button><span>·</span><button id="settings-btn">설정</button><span>·</span><a href="./downloads/eoseoojeom-source.zip" download>전체 소스</a></div></footer>
+    </main>
+  </div>
+
+  <div id="welcome-screen" class="welcome-screen">
+    <div class="welcome-card">
+      <span class="welcome-label">나만의 편의점이 문을 엽니다</span>
+      <div class="welcome-logo"><span class="logo-roof"></span><h2>어서오점<span>.</span></h2><span class="welcome-subtitle">작은 가게, 매일 자라는 이야기</span></div>
+      <p>삐빅, 상품을 스캔하고.<br>딸랑, 손님을 맞이하고.<br>골목의 작은 가게를 우리 동네 단골집으로.</p>
+      <div class="difficulty-picker" role="group" aria-label="난이도 선택"><button data-difficulty="easy">느긋하게<small>쉬움</small></button><button data-difficulty="normal" class="selected">차근차근<small>보통</small></button><button data-difficulty="hard">바쁘게<small>어려움</small></button></div>
+      <button id="new-game-btn" class="button primary welcome-start">나의 가게 시작하기 <span>→</span></button>
+      <button id="continue-btn" class="button outline welcome-continue" hidden>이어서 영업하기</button>
+      <div class="welcome-notes"><span><span data-icon="clock"></span>하루 약 5분</span><span><span data-icon="heart"></span>PC · 모바일</span><button id="welcome-help">처음이라면?</button></div>
+    </div>
+    <div class="welcome-sticker"><span data-icon="leaf"></span>오늘부터<br>사장님!</div>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop" hidden><section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-head"><div><span class="eyebrow" id="modal-eyebrow">점장의 작은 수첩</span><h2 id="modal-title"></h2></div><button id="modal-close" class="icon-button" aria-label="닫기"><span data-icon="close"></span></button></div><div id="modal-body" class="modal-body"></div></section></div>
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+  <div id="confetti" aria-hidden="true"></div>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
